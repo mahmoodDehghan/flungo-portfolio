@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14
+    environment: 
+      - POSTGRES_DB=flungportfolio
+      - POSTGRES_USER=mahmood
+      - POSTGRES_PASSWORD=1234MDM
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    environment: 
+      - SECRET_KEY=testsecretkey
+      - DEBUG=1
+      - POSTGRES_DB=flungportfolio
+      - POSTGRES_USER=mahmood
+      - POSTGRES_PASSWORD=1234MDM
+      - ENVIRONMENT=development
+
+    volumes: 
+      - .:/code
+    ports: 
+      - "8000:8000"
+    depends_on: 
+      - db   

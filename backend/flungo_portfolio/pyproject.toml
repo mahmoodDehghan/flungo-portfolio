@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "flungo_portfolio"
+version = "0.1.0"
+description = "flungo_portfolio backend with django and postgre sql"
+authors = ["MahmoodDehghan"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "^3.2.8"
+psycopg2-binary = "^2.9.1"
+Pillow = "^8.3.2"
+djangorestframework = "^3.12.4"
+django-cors-headers = "^3.10.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
