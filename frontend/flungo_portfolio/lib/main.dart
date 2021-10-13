@@ -7,7 +7,7 @@ import 'app.dart';
 void main() {
   setPathUrlStrategy();
   runApp(
-    ProviderScope(
+    const ProviderScope(
       child: FlungoPortFolioApp(),
     ),
   );

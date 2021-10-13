@@ -1,29 +1,36 @@
-import 'package:flungo_portfolio/routers/route_path.dart';
+import 'package:flungo_portfolio/providers/route_path_provider.dart';
+
+import './route_path.dart';
 import 'package:flutter/material.dart';
 
 class MainRouterInformationParser extends RouteInformationParser<RoutePath> {
-  Map<String, Widget> routes;
+  RoutePathState routeState;
 
-  MainRouterInformationParser({required this.routes}) : super();
+  MainRouterInformationParser({required this.routeState}) : super();
 
   @override
   Future<RoutePath> parseRouteInformation(
       RouteInformation routeInformation) async {
     final uri = Uri.parse(routeInformation.location!);
+    RoutePath route = RoutePath.home();
     if (uri.pathSegments.isEmpty) {
-      return RoutePath.home();
+      routeState.newRouteWithoutListen = route;
+      return route;
     } else {
       var routeName = uri.pathSegments[0];
-      if (routeName == '') {
-        routeName = RoutePath.homePath;
-      }
+      // if (routeName == '') {
+      //   routeName = RoutePath.homePath;
+      // }
 
-      if (routes.keys.contains(routeName)) {
-        return RoutePath.page(routeName);
+      if (routeState.routes.keys.contains(routeName)) {
+        route = RoutePath.page(routeName);
+        routeState.newRouteWithoutListen = route;
+        return route;
       }
     }
-
-    return RoutePath.unknown();
+    route = RoutePath.unknown();
+    routeState.newRouteWithoutListen = route;
+    return route;
   }
 
   @override

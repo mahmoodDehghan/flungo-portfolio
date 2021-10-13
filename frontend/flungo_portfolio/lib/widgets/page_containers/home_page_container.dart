@@ -1,6 +1,8 @@
-import 'package:flungo_portfolio/pages/admin_page.dart';
-import 'package:flungo_portfolio/pages/client_page.dart';
-import '../../providers/current_page_provider.dart';
+import 'package:flungo_portfolio/providers/route_path_provider.dart';
+import 'package:flungo_portfolio/routers/route_path.dart';
+
+import '../../pages/admin_page.dart';
+import '../../pages/client_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -25,14 +27,15 @@ class HomePageContainer extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.read(routeProvider);
     return Scaffold(
         body: Row(
       children: [
         getPart('Admin', () {
-          ref.watch(currentPageProvider).changePage(AdminPage.routeName);
+          router.newRoute = RoutePath.page(AdminPage.routeName);
         }),
         getPart('Client', () {
-          ref.watch(currentPageProvider).changePage(ClientPage.routeName);
+          router.newRoute = RoutePath.page(ClientPage.routeName);
         }),
       ],
     ));
