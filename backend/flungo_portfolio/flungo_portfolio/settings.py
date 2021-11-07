@@ -32,8 +32,11 @@ ALLOWED_HOSTS = ["http://localhost:8000",
     'localhost',
     '127.0.0.1',
     '0.0.0.0',
+    '10.0.2.2',
     "http://0.0.0.0:8000",
-    "http://0.0.0.0:8001",]#change later
+    "http://0.0.0.0:8001",
+    "http://10.0.2.2:8000",
+    ]#change later
 
 
 # Application definition
@@ -46,11 +49,39 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #our modules
+    'main.apps.MainConfig',
+    
     #3rd parties
     'rest_framework',
     'corsheaders',
+    'oauth2_provider',
     
 ]
+#for oauth login 
+LOGIN_URL='/admin/login/'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    #     # 'rest_framework.permissions.DjangoModelPermissions',
+    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
+
+OAUTH2_PROVIDER = {
+    "OIDC_ENABLED": True,
+    "OIDC_RSA_PRIVATE_KEY": os.environ.get("OIDC_RSA_PRIVATE_KEY"),
+    "openid": "OpenID Connect scope",
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'}
+}
+
+AUTH_USER_MODEL = 'main.CUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,6 +109,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8001",
     "http://0.0.0.0:8000",
     "http://0.0.0.0:8001",
+    "http://10.0.2.2:8000",
 ]
 CORS_ALLOW_HEADERS = [
 'accept',
@@ -105,6 +137,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8001",
     "http://0.0.0.0:8000",
     "http://0.0.0.0:8001",
+    "http://10.0.2.2:8000",
 ]
 
 ROOT_URLCONF = 'flungo_portfolio.urls'

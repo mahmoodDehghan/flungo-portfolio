@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -18,8 +19,10 @@ class AdminChangePassword extends HookConsumerWidget {
   final message = useState('Enter a password for Admin user');
 
   void _updateAdminPass(WidgetRef ref) async {
+    final baseUrl =
+        Platform.isAndroid ? ConstItems.androidBaseUrl : ConstItems.baseUrl;
     final response = await http.put(
-      Uri.parse('http://127.0.0.1:8000/adminapi/updatePass/'),
+      Uri.parse(baseUrl + '/adminapi/updatePass/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

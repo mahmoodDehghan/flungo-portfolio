@@ -38,9 +38,11 @@ class MainRouterDelegate extends RouterDelegate<RoutePath>
               child: currentRoutePathState.routes[RoutePath.unknownPath]!),
         if (currentRoutePathState.currentPath.isOtherPage)
           MaterialPage(
-              child: currentRoutePathState
-                  .routes[currentRoutePathState.currentPath.pathName]!,
-              key: ValueKey(currentRoutePathState)),
+            child: currentRoutePathState
+                .routes[currentRoutePathState.currentPath.pathName]!,
+            arguments: currentRoutePathState.currentPath.uriQueryParameters,
+            key: ValueKey(currentRoutePathState.currentPath),
+          ),
       ],
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
@@ -54,6 +56,9 @@ class MainRouterDelegate extends RouterDelegate<RoutePath>
 
   @override
   Future<void> setNewRoutePath(RoutePath configuration) async {
+    // if (configuration.uriQueryParameters != null) {
+    //   currentRoutePathState.newRoute = configuration;
+    // }
     //   if (configuration.isUnknown) {
     //     currentRoutePathState.newRouteWithoutListen = RoutePath.unknown();
     //     return;

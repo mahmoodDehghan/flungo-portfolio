@@ -1,3 +1,4 @@
+import 'package:flungo_portfolio/pages/admin_page.dart';
 import 'package:flungo_portfolio/providers/route_path_provider.dart';
 
 import './route_path.dart';
@@ -14,21 +15,19 @@ class MainRouterInformationParser extends RouteInformationParser<RoutePath> {
     final uri = Uri.parse(routeInformation.location!);
     RoutePath route = RoutePath.home();
     if (uri.pathSegments.isEmpty) {
-      routeState.newRouteWithoutListen = route;
-      return route;
-    } else {
-      var routeName = uri.pathSegments[0];
-      // if (routeName == '') {
-      //   routeName = RoutePath.homePath;
-      // }
-
-      if (routeState.routes.keys.contains(routeName)) {
-        route = RoutePath.page(routeName);
-        routeState.newRouteWithoutListen = route;
+      if (uri.hasQuery) {
+        route = RoutePath.page(AdminPage.routeName, uri.queryParameters);
+        routeState.newRoute = route;
         return route;
       }
+    } else {
+      var routeName = uri.pathSegments[0];
+      if (routeState.routes.keys.contains(routeName)) {
+        route = RoutePath.page(routeName, uri.queryParameters);
+      } else {
+        route = RoutePath.unknown();
+      }
     }
-    route = RoutePath.unknown();
     routeState.newRouteWithoutListen = route;
     return route;
   }

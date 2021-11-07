@@ -21,4 +21,3 @@ class UpdateAdminPassword(generics.UpdateAPIView):
         'message': 'password updated successfully',
         'data': [],
       });
-  

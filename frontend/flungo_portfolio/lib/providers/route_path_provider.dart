@@ -1,5 +1,3 @@
-import 'package:flungo_portfolio/pages/admin_login_page.dart';
-import 'package:flungo_portfolio/routers/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -7,6 +5,7 @@ import '../pages/admin_page.dart';
 import '../pages/client_page.dart';
 import '../pages/home_page.dart';
 import '../pages/unknown_page.dart';
+import '../routers/route_path.dart';
 
 class RoutePathState extends ChangeNotifier {
   RoutePath _currentPath = RoutePath.home();
@@ -15,7 +14,8 @@ class RoutePathState extends ChangeNotifier {
   RoutePathState({required this.routes});
 
   set newRoute(RoutePath newRoute) {
-    if (newRoute.pathName != _currentPath.pathName) {
+    if (newRoute.pathName != _currentPath.pathName ||
+        newRoute.uriQueryParameters != null) {
       if (routes.containsKey(newRoute.pathName)) {
         _currentPath = newRoute;
       } else {
@@ -45,7 +45,6 @@ final Map<String, Widget> _legalRoutes = {
   AdminPage.routeName: AdminPage(),
   ClientPage.routeName: const ClientPage(),
   UnknownPage.routeName: const UnknownPage(),
-  AdminLoginPage.routeName: const AdminLoginPage()
 };
 
 final routeProvider = ChangeNotifierProvider<RoutePathState>((ref) {

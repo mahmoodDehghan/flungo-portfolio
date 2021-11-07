@@ -29,15 +29,16 @@ class HomePageContainer extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.read(routeProvider);
     return Scaffold(
-        body: Row(
-      children: [
-        getPart('Admin', () {
-          router.newRoute = RoutePath.page(AdminPage.routeName);
-        }),
-        getPart('Client', () {
-          router.newRoute = RoutePath.page(ClientPage.routeName);
-        }),
-      ],
-    ));
+      body: Row(
+        children: [
+          getPart('Admin', () {
+            router.newRoute = RoutePath.page(AdminPage.routeName, null);
+          }),
+          getPart('Client', () {
+            router.newRoute = RoutePath.page(ClientPage.routeName, null);
+          }),
+        ],
+      ),
+    );
   }
 }
