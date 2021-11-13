@@ -1,31 +1,32 @@
-import 'dart:io' show Platform;
-
-import 'package:flungo_portfolio/hooks/unilink_hook.dart';
-import 'package:flungo_portfolio/providers/oauth_client_provider.dart';
-import 'package:flungo_portfolio/widgets/helpers/oauth2_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/link.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../helpers/oauth_client_helper.dart';
+import '../../providers/oauth_client_provider.dart';
+import '../../widgets/helpers/platform_helper.dart';
+import '../../widgets/helpers/oauth2_client.dart';
+import '../../widgets/helpers/web_oauth_client_helper.dart';
 import '../../models/const_items.dart';
 import '../../providers/shared_prefrences_provider.dart';
 
 class AdminLoginContainer extends HookConsumerWidget {
   final remember = useState(true);
   final ValueNotifier adminLoginState;
-  //final ValueNotifier redirectState;
 
   AdminLoginContainer({
     Key? key,
     required this.adminLoginState,
-    // required this.redirectState,
   }) : super(key: key);
 
-  void login(WidgetRef ref) async {
-    final pref = await ref.read(sharedPrefrencesProvider.future);
-    pref.setBool(ConstItems.adminLoginedPrefKey, remember.value);
-    var client = CustomOAuthClient(
+  void setAdminLoginnedTrue() {
+    adminLoginState.value = true;
+  }
+
+  void webLogin(WidgetRef ref, SharedPreferences pref) async {
+    var client = WebCustomOAuthClient(
       redirectUri: 'http://localhost:8001/',
       customUriScheme: 'flungo_portfolio:/',
       mainUrl: ConstItems.baseUrl,
@@ -34,41 +35,50 @@ class AdminLoginContainer extends HookConsumerWidget {
     );
     var token = await client.getAuthToken();
     if (token != null && token.accessToken != null) {
-      pref.setString(ConstItems.adminToken, token.accessToken!);
-      adminLoginState.value = true;
+      if (remember.value) {
+        pref.setString(ConstItems.adminToken, token.accessToken!);
+      }
+      setAdminLoginnedTrue();
     }
   }
 
-  void androidLogin(BuildContext ctx, WidgetRef ref) async {
+  void winLogin(BuildContext ctx, WidgetRef ref, Oauth2Client client,
+      SharedPreferences pref) async {
+    launchUrl(client);
+    await client.listenAndCompeleteAuthorization();
+    if (remember.value) {
+      pref.setString(
+          ConstItems.adminToken, client.client!.credentials.accessToken);
+    }
+    setAdminLoginnedTrue();
+  }
+
+  void mobileLogin(Oauth2Client client) async {
+    launchUrl(client);
+  }
+
+  void launchUrl(Oauth2Client client) async {
+    client.authorize();
+    String url = client.authorizationUrl!.toString();
+    if (await canLaunch(url)) {
+      launch(url);
+    }
+  }
+
+  void login(BuildContext ctx, WidgetRef ref) async {
     final pref = await ref.read(sharedPrefrencesProvider.future);
     pref.setBool(ConstItems.adminLoginedPrefKey, remember.value);
-    final clProvider = ref.read(oAuthClientProvider);
-    // var client = Oauth2Client(
-    //   authorizationEndPoint: ConstItems.androidBaseUrl + '/o/authorize/',
-    //   clientId: 'IwZ3xncsbEyez5DnlpwUgnajMm97WyKhuVMBehcc',
-    //   clientSecret:
-    //       'rPOtZuRGMoKyiFSScfyr9A025mH2LDUzNhJEwfCVoDR1mOHlLC0bBLxQabGZVLlkanYoc9ZPhAhLOmu6rBLm1rOwEXI5wMXGyQElaUqrHLv9aY6ZPBIAsQ40nFmSqhIG',
-    //   redirectUrl: 'http://my.flungo_portfolio.com/',
-    //   tokenEndPoint: ConstItems.androidBaseUrl + '/o/token/',
-    // );
+    final oauthClient = ref.watch(oAuthClientProvider);
 
-    await clProvider.state.authorize();
-    // var client = CustomOAuthClient(
-    //   redirectUri: 'http://my.flungo_portfolio.com/',
-    //   customUriScheme: '',
-    //   mainUrl: ConstItems.androidBaseUrl,
-    //   clientId: 'IwZ3xncsbEyez5DnlpwUgnajMm97WyKhuVMBehcc',
-    //   clientSecret:
-    //       'rPOtZuRGMoKyiFSScfyr9A025mH2LDUzNhJEwfCVoDR1mOHlLC0bBLxQabGZVLlkanYoc9ZPhAhLOmu6rBLm1rOwEXI5wMXGyQElaUqrHLv9aY6ZPBIAsQ40nFmSqhIG',
-    // );
-    // var token = await client.getAuthToken();
-    // print(token!.accessToken);
-    // if (token != null && token.accessToken != null) {
-    //   final pref = await ref.read(sharedPrefrencesProvider.future);
-    //   pref.setBool(ConstItems.adminLoginedPrefKey, remember.value);
-    //   pref.setString(ConstItems.adminToken, token.accessToken!);
-    //   adminLoginState.value = true;
-    // }
+    if (PlatformHelper.isWeb) {
+      webLogin(ref, pref);
+    } else {
+      if (PlatformHelper.isWindows) {
+        winLogin(ctx, ref, oauthClient.state, pref);
+      } else if (PlatformHelper.isMobile) {
+        mobileLogin(oauthClient.state);
+      }
+    }
   }
 
   void rememberChanged(bool? newValue) {
@@ -79,6 +89,13 @@ class AdminLoginContainer extends HookConsumerWidget {
     }
   }
 
+  Widget getButton(BuildContext context, FollowLink? followLink) {
+    return ElevatedButton(
+      onPressed: followLink,
+      child: const Text('login'),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -87,8 +104,7 @@ class AdminLoginContainer extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton(
-              onPressed: () =>
-                  Platform.isAndroid ? androidLogin(context, ref) : login(ref),
+              onPressed: () => login(context, ref),
               child: const Text('login'),
             ),
             CheckboxListTile(

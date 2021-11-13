@@ -1,11 +1,11 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
-import 'package:flungo_portfolio/models/const_items.dart';
+import '../models/const_items.dart';
 import '../widgets/helpers/oauth2_client.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final oAuthClientProvider = StateProvider<Oauth2Client>((ref) {
-  if (Platform.isAndroid) {
+Oauth2Client getOAuthHandler() {
+  if (TargetPlatform.android == defaultTargetPlatform) {
     return Oauth2Client(
       authorizationEndPoint: ConstItems.androidBaseUrl + '/o/authorize/',
       clientId: 'IwZ3xncsbEyez5DnlpwUgnajMm97WyKhuVMBehcc',
@@ -14,12 +14,24 @@ final oAuthClientProvider = StateProvider<Oauth2Client>((ref) {
       redirectUrl: 'http://my.flungo_portfolio.com/',
       tokenEndPoint: ConstItems.androidBaseUrl + '/o/token/',
     );
+  } else if (kIsWeb) {
+    return Oauth2Client(
+      authorizationEndPoint: ConstItems.baseUrl + '/o/authorize/',
+      clientId: ConstItems.oClientID,
+      clientSecret: ConstItems.oClientSecret,
+      redirectUrl: ConstItems.oRedirectUrl,
+      tokenEndPoint: ConstItems.baseUrl + '/o/token/',
+    );
   }
   return Oauth2Client(
     authorizationEndPoint: ConstItems.baseUrl + '/o/authorize/',
-    clientId: ConstItems.oClientID,
-    clientSecret: ConstItems.oClientSecret,
-    redirectUrl: 'http://localhost:8001/',
     tokenEndPoint: ConstItems.baseUrl + '/o/token/',
+    clientId: ConstItems.winClientID,
+    clientSecret: ConstItems.winClientSecret,
+    redirectUrl: ConstItems.winRedirectUrl,
   );
+}
+
+final oAuthClientProvider = StateProvider<Oauth2Client>((ref) {
+  return getOAuthHandler();
 });

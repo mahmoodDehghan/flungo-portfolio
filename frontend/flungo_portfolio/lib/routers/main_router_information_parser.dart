@@ -1,8 +1,9 @@
-import 'package:flungo_portfolio/pages/admin_page.dart';
-import 'package:flungo_portfolio/providers/route_path_provider.dart';
-
-import './route_path.dart';
 import 'package:flutter/material.dart';
+
+import '../widgets/helpers/platform_helper.dart';
+import '../pages/admin_page.dart';
+import '../providers/route_path_provider.dart';
+import './route_path.dart';
 
 class MainRouterInformationParser extends RouteInformationParser<RoutePath> {
   RoutePathState routeState;
@@ -15,7 +16,7 @@ class MainRouterInformationParser extends RouteInformationParser<RoutePath> {
     final uri = Uri.parse(routeInformation.location!);
     RoutePath route = RoutePath.home();
     if (uri.pathSegments.isEmpty) {
-      if (uri.hasQuery) {
+      if (PlatformHelper.isMobile && uri.hasQuery) {
         route = RoutePath.page(AdminPage.routeName, uri.queryParameters);
         routeState.newRoute = route;
         return route;

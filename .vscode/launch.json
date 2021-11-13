@@ -22,7 +22,7 @@
       "cwd": "frontend\\flungo_portfolio",
       "request": "launch",
       "type": "dart",
-      "args":["-d", "chrome","--web-port", "8001"],
+      "args":["-d", "Chrome","--web-port", "8001"],
     }
   ]
 }

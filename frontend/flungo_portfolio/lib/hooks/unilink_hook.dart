@@ -1,3 +1,4 @@
+// if you wwant use uni_links package this will help
 // import 'dart:async';
 
 // import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@
 // import 'package:uni_links/uni_links.dart';
 
 // class _UniLinkHook extends Hook<void> {
-//   final void Function(Uri?) callbackFunction;
+//   final void Function(String?) callbackFunction;
 //   const _UniLinkHook(this.callbackFunction);
 
 //   @override
@@ -18,7 +19,7 @@
 //   @override
 //   void initHook() {
 //     super.initHook();
-//     _sub = uriLinkStream.listen(hook.callbackFunction);
+//     _sub = linkStream.listen(hook.callbackFunction);
 //   }
 
 //   @override
@@ -31,6 +32,6 @@
 //   void build(BuildContext context) {}
 // }
 
-// void useUniLinkHook(BuildContext context, void Function(Uri?) callback) {
+// void useUniLinkHook(BuildContext context, void Function(String?) callback) {
 //   return use(_UniLinkHook(callback));
 // }

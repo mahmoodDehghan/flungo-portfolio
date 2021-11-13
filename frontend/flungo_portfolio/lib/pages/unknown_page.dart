@@ -1,4 +1,4 @@
-import 'package:flungo_portfolio/routers/route_path.dart';
+import '../routers/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

@@ -1,5 +1,5 @@
-import 'package:flungo_portfolio/providers/route_path_provider.dart';
-import 'package:flungo_portfolio/routers/route_path.dart';
+import '../../providers/route_path_provider.dart';
+import '../../routers/route_path.dart';
 
 import '../../pages/admin_page.dart';
 import '../../pages/client_page.dart';

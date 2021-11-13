@@ -1,4 +1,4 @@
-import 'package:flungo_portfolio/providers/route_path_provider.dart';
+import '../providers/route_path_provider.dart';
 
 import './route_path.dart';
 import 'package:flutter/material.dart';
@@ -55,23 +55,5 @@ class MainRouterDelegate extends RouterDelegate<RoutePath>
   }
 
   @override
-  Future<void> setNewRoutePath(RoutePath configuration) async {
-    // if (configuration.uriQueryParameters != null) {
-    //   currentRoutePathState.newRoute = configuration;
-    // }
-    //   if (configuration.isUnknown) {
-    //     currentRoutePathState.newRouteWithoutListen = RoutePath.unknown();
-    //     return;
-    //   }
-    //   if (configuration.isHomePage) {
-    //     currentRoutePathState.newRouteWithoutListen = RoutePath.home();
-    //     return;
-    //   }
-    //   if (!currentRoutePathState.routes.keys.contains(configuration.pathName)) {
-    //     currentRoutePathState.newRouteWithoutListen = RoutePath.unknown();
-    //     return;
-    //   }
-    //   currentRoutePathState.newRouteWithoutListen =
-    //       RoutePath.page(configuration.pathName);
-  }
+  Future<void> setNewRoutePath(RoutePath configuration) async {}
 }
