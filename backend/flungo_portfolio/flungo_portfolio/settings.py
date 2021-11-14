@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 
     #our modules
     'main.apps.MainConfig',
+    'categories.apps.CategoriesConfig',
     
     #3rd parties
     'rest_framework',
